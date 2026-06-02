@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WhatsApp AI Bot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <span class="logo-icon">🤖</span>
+          <div>
+            <div class="logo-title">WA AI Bot</div>
+            <div class="logo-sub" id="botStatus">Connecting...</div>
+          </div>
+        </div>
+        <button class="icon-btn" id="addContactBtn" title="Add Contact">+</button>
+      </div>
+
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search contacts..." />
+      </div>
+
+      <div class="contacts-list" id="contactsList"></div>
+
+      <div class="sidebar-footer">
+        <div class="my-profile-mini" id="myProfileMini">
+          <div class="avatar" style="background:#6366f1">M</div>
+          <div>
+            <div class="profile-name">Mathews</div>
+            <div class="profile-sub">Bot Identity</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN AREA -->
+    <main class="main" id="main">
+      <!-- EMPTY STATE -->
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">💬</div>
+        <h2>WhatsApp AI Bot</h2>
+        <p>Select a contact to manage their conversation, or add a new contact to get started.</p>
+        <button class="btn btn-primary" id="emptyAddBtn">+ Add Contact</button>
+      </div>
+
+      <!-- CONTACT VIEW (hidden until selected) -->
+      <div class="contact-view hidden" id="contactView">
+        <!-- TOP BAR -->
+        <div class="top-bar">
+          <div class="top-bar-left">
+            <div class="avatar" id="cvAvatar">?</div>
+            <div>
+              <div class="contact-name" id="cvName">—</div>
+              <div class="contact-meta" id="cvMeta">—</div>
+            </div>
+          </div>
+          <div class="top-bar-actions">
+            <button class="badge-btn" id="draftBadge" style="display:none">📝 Drafts</button>
+            <button class="toggle-btn" id="takeoverBtn" title="Takeover Mode">🎮 Takeover OFF</button>
+            <button class="icon-btn danger" id="deleteContactBtn" title="Delete Contact">🗑</button>
+          </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="tabs">
+          <button class="tab active" data-tab="chat">💬 Chat</button>
+          <button class="tab" data-tab="profile">👤 Profile</button>
+          <button class="tab" data-tab="schedule">⏰ Schedule</button>
+          <button class="tab" data-tab="analytics">📊 Analytics</button>
+        </div>
+
+        <!-- TAB CONTENT -->
+        <div class="tab-body">
+
+          <!-- CHAT TAB -->
+          <div class="tab-pane active" id="tab-chat">
+            <div class="chat-alerts" id="chatAlerts"></div>
+
+            <!-- Draft Review Panel -->
+            <div class="draft-panel hidden" id="draftPanel">
+              <div class="draft-header">📝 Draft Reply Pending Approval</div>
+              <div class="draft-text" id="draftText"></div>
+              <div class="draft-actions">
+                <button class="btn btn-success" id="approveDraftBtn">✅ Send</button>
+                <button class="btn btn-danger" id="rejectDraftBtn">❌ Discard</button>
+              </div>
+            </div>
+
+            <div class="chat-window" id="chatWindow"></div>
+
+            <div class="chat-footer">
+              <div class="quick-sends">
+                <button class="qs-btn" data-occasion="good morning">🌅 GM</button>
+                <button class="qs-btn" data-occasion="good night">🌙 GN</button>
+                <button class="qs-btn" data-occasion="thinking of you">💭 Thinking of you</button>
+                <button class="qs-btn" data-occasion="check in">👋 Check in</button>
+                <button class="qs-btn" data-occasion="miss you">❤️ Miss you</button>
+              </div>
+              <div class="message-input-row">
+                <textarea id="msgInput" placeholder="Type a message..." rows="1"></textarea>
+                <button class="btn btn-primary" id="sendBtn">Send</button>
+              </div>
+              <div class="chat-actions">
+                <button class="btn btn-ghost" id="summaryBtn">🧠 Summary</button>
+                <button class="btn btn-ghost" id="clearChatBtn">🗑 Clear History</button>
+                <button class="btn btn-ghost" id="exportBtn">💾 Export</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- PROFILE TAB -->
+          <div class="tab-pane hidden" id="tab-profile">
+            <form class="profile-form" id="profileForm">
+              <div class="form-grid">
+                <div class="field">
+                  <label>Name</label>
+                  <input type="text" name="name" placeholder="Contact name" />
+                </div>
+                <div class="field">
+                  <label>Nickname</label>
+                  <input type="text" name="nickname" placeholder="What to call them" />
+                </div>
+                <div class="field">
+                  <label>Phone</label>
+                  <input type="text" name="phone" readonly style="opacity:0.5" />
+                </div>
+                <div class="field">
+                  <label>Age</label>
+                  <input type="text" name="age" placeholder="Age" />
+                </div>
+                <div class="field">
+                  <label>Relationship</label>
+                  <select name="relationship">
+                    <option value="friend">Friend</option>
+                    <option value="best friend">Best Friend</option>
+                    <option value="lover">Lover</option>
+                    <option value="girlfriend">Girlfriend</option>
+                    <option value="partner">Partner</option>
+                    <option value="wife">Wife</option>
+                    <option value="family">Family</option>
+                    <option value="colleague">Colleague</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>City</label>
+                  <input type="text" name="city" placeholder="Where they live" />
+                </div>
+                <div class="field">
+                  <label>Birthday (MM-DD)</label>
+                  <input type="text" name="birthday" placeholder="e.g. 03-22" />
+                </div>
+                <div class="field">
+                  <label>Interests</label>
+                  <input type="text" name="interests" placeholder="Music, movies, fitness..." />
+                </div>
+              </div>
+
+              <div class="field full">
+                <label>Personality Notes</label>
+                <textarea name="notes" rows="3" placeholder="How do they talk? What do they like?"></textarea>
+              </div>
+
+              <div class="tone-section">
+                <div class="field">
+                  <label>Tone Level: <span id="toneLevelDisplay">30</span>/100</label>
+                  <input type="range" name="toneLevel" min="0" max="100" value="30" id="toneSlider" />
+                  <div class="tone-labels"><span>Casual</span><span>Warm</span><span>Flirty</span><span>🌶️ Spicy</span></div>
+                </div>
+                <div class="field">
+                  <label>Personality Mode</label>
+                  <div class="mode-pills">
+                    <label class="pill"><input type="radio" name="personalityMode" value="balanced" checked/> Balanced</label>
+                    <label class="pill"><input type="radio" name="personalityMode" value="sweet"/> Sweet</label>
+                    <label class="pill"><input type="radio" name="personalityMode" value="funny"/> Funny</label>
+                    <label class="pill"><input type="radio" name="personalityMode" value="flirty"/> Flirty</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="toggle-row">
+                <label class="toggle-label">
+                  <span>Draft Review Mode</span>
+                  <p class="toggle-desc">Hold AI replies for your approval before sending</p>
+                </label>
+                <label class="switch"><input type="checkbox" name="draftReview" id="draftReviewToggle"/><span class="slider"></span></label>
+              </div>
+
+              <div class="toggle-row">
+                <label class="toggle-label">
+                  <span>Gap Detector</span>
+                  <p class="toggle-desc">Auto-start conversation after long silence</p>
+                </label>
+                <label class="switch"><input type="checkbox" name="gapDetector" id="gapDetectorToggle"/><span class="slider"></span></label>
+              </div>
+
+              <div class="toggle-row">
+                <label class="toggle-label">
+                  <span>Auto Starter</span>
+                  <p class="toggle-desc">Send conversation openers after silence</p>
+                </label>
+                <label class="switch"><input type="checkbox" name="autoStarter" id="autoStarterToggle"/><span class="slider"></span></label>
+              </div>
+
+              <div class="field">
+                <label>Gap Hours (silence before auto-starter fires)</label>
+                <input type="number" name="gapHours" min="1" max="72" placeholder="Default: 3h lovers / 6h friends" />
+              </div>
+
+              <div class="extracted-facts" id="extractedFacts" style="display:none">
+                <h4>🔍 Learned About Them</h4>
+                <div id="extractedFactsContent"></div>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">💾 Save Profile</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- SCHEDULE TAB -->
+          <div class="tab-pane hidden" id="tab-schedule">
+            <div class="schedule-header">
+              <h3>Scheduled Messages</h3>
+              <button class="btn btn-primary btn-sm" id="addScheduleBtn">+ Add Schedule</button>
+            </div>
+            <div id="scheduleList" class="schedule-list"></div>
+          </div>
+
+          <!-- ANALYTICS TAB -->
+          <div class="tab-pane hidden" id="tab-analytics">
+            <div class="analytics-grid" id="analyticsGrid"></div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ADD CONTACT MODAL -->
+  <div class="modal hidden" id="addContactModal">
+    <div class="modal-box">
+      <h3>Add Contact</h3>
+      <div class="field">
+        <label>Phone Number (with country code)</label>
+        <input type="text" id="newPhone" placeholder="e.g. +61412345678" />
+      </div>
+      <div class="field">
+        <label>Name</label>
+        <input type="text" id="newName" placeholder="Contact name" />
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="confirmAddContact">Add</button>
+        <button class="btn btn-ghost" id="cancelAddContact">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUMMARY MODAL -->
+  <div class="modal hidden" id="summaryModal">
+    <div class="modal-box">
+      <h3>🧠 Relationship Summary</h3>
+      <div class="summary-text" id="summaryText">Generating...</div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="closeSummaryModal">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTIFICATION TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
